@@ -1,80 +1,80 @@
 import { List, Map } from 'immutable';
 
 import { RESET, ITEM_SELECTED, ITEM_UNSELECTED } from '../constants/action-types';
-import items from '../data/items';
+import AvailableItem from '../data/available-item';
+// import items from '../data/items';
+import recipes from '../data/recipes';
 
-const initialStore = new Map({
-	availableItems: new List([]),
-	selectedItems: new List([]),
-	remainingRecipes: new List([]),
-	currentRecipe: undefined,
-	completedRecipes: new List([]),
-	points: 0,
-});
+function _initialState() {
+	const allRecipes = recipes.sort(() => (Math.random() - 0.5));
+	const currentRecipe = allRecipes.last();
+	const remainingRecipes = allRecipes.pop();
+	const availableItems = currentRecipe.get('components').map(item => new AvailableItem({ item }));
 
-export default function events(state = initialStore, action) {
-	switch (action.type) {
-		case ITEM_SELECTED
-			return itemSelected(action, state);
-
-		case ITEM_UNSELECTED
-			return itemUnselected(action, state);
-
-		case RESET:
-			return reset(action, state);
-
-		default:
-			return state;
-	}
+	return new Map({
+		availableItems,
+		selectedItems: new List([]),
+		remainingRecipes,
+		currentRecipe,
+		completedRecipes: new List([]),
+		points: 0,
+	});
 }
 
-function itemSelected(action, state) {
-	const currentCorrectSelectedItems = state.selectedItems.filter((selectedItem) => {
-		return selectedItem.correct;
-	});
+const initialStore = _initialState();
 
-	let remainingComponents = state.currentRecipe.components;
+function lexographicSort(a, b) {
+	return a.localeCompare(b);
+}
 
-	for (let component in currentCorrectSelectedItems.values()) }
-		const componentIndex = remainingComponents.findKey(component);
-		if (componentIndex !== undefined) {
-			remainingComponents = remainingComponents.delete(componentIndex);
-		}
-	}
+function itemSelected(action, _state) {
+	let state = _state;
 
-	const itemCorrect = remainingComponents.find((itemId) => { return itemId === action.itemId; });
-	const newSelectedItem = new SelectedItem({
-		correct: itemCorrect,
-		itemId: action.itemId
-	});
-
-	const newSelectedItems = state.selectedItems.push(newSelectedItem);
-	state = state.set('selectedItems', newSelectedItems);
-
-	// If we don't have all the components yet just return
-	if (state.selectedItems.length < currentRecipe.components.length) {
+	if (state.get('selectedItems').contains(action.availableItem)) {
+		console.error('Selected item which has already been selected');
 		return state;
 	}
 
-	const allCorrect = state.selectedItems.every((selectedItem) => {
-		return selectedItem.correct;
-	});
+	state = state.set('selectedItems', state.get('selectedItems').push(action.availableItem));
+
+	const correctItemIds = state.get('currentRecipe').get('components')
+		.map(item => item.get('id'))
+		.sort(lexographicSort);
+
+	const selectedItemIds = state.get('selectedItems')
+		.map(availableItem => availableItem.item.id)
+		.sort(lexographicSort);
+
+	if (correctItemIds.size !== selectedItemIds.size) {
+		return state;
+	}
+
+	let allCorrect = true;
+
+	for (let i = 0; i < correctItemIds.length; i++) {
+		console.log(`${i} - ${correctItemIds[i]}, ${selectedItemIds[i]}`);
+		if (correctItemIds[i] !== selectedItemIds[i]) {
+			allCorrect = false;
+			break;
+		}
+	}
+
+	console.log(`All correct: ${allCorrect}`);
 
 	if (allCorrect) {
-		state = state.set('points', state.points + 1);
+		state = state.set('points', state.get('points') + 1);
+		state = state.set('completedRecipes', state.get('completedRecipes').push(state.get('currentRecipe')));
 	} else {
 		state = state.set('points', 0);
 	}
 
-	state = state.set('completedRecipes', state.completedRecipes.push(state.currentRecipe));
 	state = state.set('selectedItems', new List([]));
-	if (state.remainingRecipes.length > 0) {
-		state = state.set('currentRecipe', state.remainingRecipes.last());
-		state = state.set('remainingRecipes', state.remainingRecipes.pop());
+
+	if (state.get('remainingRecipes').size > 0) {
+		state = state.set('currentRecipe', state.get('remainingRecipes').last());
+		state = state.set('remainingRecipes', state.get('remainingRecipes').pop());
 		state = state.set('availableItems',
-			state.currentRecipe.components.map((item) => {
-				return new AvailableItem({ itemId: item.itemId });
-			})
+			state.get('currentRecipe').get('components').map(item => new AvailableItem({ item }))
 		);
 	} else {
 		state = state.set('currentRecipe', undefined);
@@ -85,33 +85,30 @@ function itemSelected(action, state) {
 }
 
 function itemUnselected(action, state) {
-	// if (!state.selectedItems.includes(action.item)) {
-	// 	console.log('Invalid item for unselection');
-	// 	return state;
-	// }
-	//
-	// const itemIndex = state.selectedItems.findKey((item) => {
-	// 	return item === action.item;
-	// });
-	const itemIndex = action.itemIndex;
+	if (!state.get('selectedItems').includes(action.availableItem)) {
+		console.log('Invalid item for unselection');
+		return state;
+	}
 
-	if (itemIndex >= state.selectedItems.size) {
+	const itemIndex = state.get('selectedItems').findKey(availableItem => availableItem === action.availableItem);
+
+	if (itemIndex >= state.get('selectedItems').size) {
 		console.error('Invalid item unselected');
 		return state;
 	}
-	return state.set('selectedItems', state.selectedItems.delete(itemIndex));
+
+	return state.set('selectedItems', state.get('selectedItems').delete(itemIndex));
 }
 
-function reset(action, state) {
-	state = state.set('completedRecipes', state.completedRecipes.push(state.currentRecipe));
+function reset(action, _state) {
+	let state = _state;
+	state = state.set('completedRecipes', state.get('completedRecipes').push(state.get('currentRecipe')));
 	state = state.set('selectedItems', new List([]));
 	if (state.remainingRecipes.length > 0) {
-		state = state.set('currentRecipe', state.remainingRecipes.last());
-		state = state.set('remainingRecipes', state.remainingRecipes.pop());
+		state = state.set('currentRecipe', state.get('remainingRecipes').last());
+		state = state.set('remainingRecipes', state.get('remainingRecipes').pop());
 		state = state.set('availableItems',
-			state.currentRecipe.components.map((item) => {
-				return new AvailableItem({ itemId: item.itemId });
-			})
+			state.currentRecipe.get('components').map(item => new AvailableItem({ item }))
 		);
 	} else {
 		state = state.set('currentRecipe', undefined);
@@ -119,4 +116,20 @@ function reset(action, state) {
 	}
 
 	return state;
+}
+
+export default function events(state = initialStore, action) {
+	switch (action.type) {
+	case ITEM_SELECTED:
+		return itemSelected(action, state);
+
+	case ITEM_UNSELECTED:
+		return itemUnselected(action, state);
+
+	case RESET:
+		return reset(action, state);
+
+	default:
+		return state;
+	}
 }

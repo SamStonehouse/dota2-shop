@@ -1,9 +1,8 @@
-import { Record } from 'immubtable';
+import { Record } from 'immutable';
 
 const _AvailableItem = {
-	selected = false,
-	itemId = '',
-}
+	item: '',
+};
 
 class AvailableItem extends Record(_AvailableItem){
 

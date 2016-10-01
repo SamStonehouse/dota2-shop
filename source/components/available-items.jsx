@@ -1,19 +1,27 @@
 import React, { PropTypes, Component } from 'react';
-import Item from './item';
+import { List } from 'immutable';
+
+import ItemDisplay from './item-display';
 
 class AvailableItems extends Component {
-	render() {
+
+	constructor() {
+		super();
+		this.renderItem = this.renderItem.bind(this);
+	}
+
+	renderItem(availableItem, index) {
 		return (
-			<div>
-				{ this.props.availableItems.map(renderItem) }
+			<div className={availableItem.selected ? 'selected' : null} key={index} >
+				<ItemDisplay item={availableItem.item} onClick={() => { this.props.onSelect(availableItem); }} />
 			</div>
 		);
 	}
 
-	renderItem(availableItem) {
+	render() {
 		return (
-			<div className={ availableItem.selected ? 'selected' : null } >
-				<Item item={ item } onClick={ () => { this.props.onSelect(availableItem) } } />
+			<div>
+				{ this.props.availableItems.map(this.renderItem) }
 			</div>
 		);
 	}

@@ -1,13 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { combineReducers } from 'redux'
+import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
-import reducers from './reducers';
+import recipes from './reducers/recipes';
 
 import RecipeGame from './components/recipe-game';
 
-const store = combineReducers(reducers);
+const store = createStore(recipes);
 
 // import configureStore from './utils/configure-store';
 // import Container from './components/container';

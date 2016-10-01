@@ -6,9 +6,17 @@
     "browser": true,
   },
   "rules": {
-    "no-tabs": "off",
+    "max-len": "off",
+    "import/prefer-default-export": "off",
+    "no-console": "off",
+    "space-before-blocks": "off",
+    "class-methods-use-this": "off",
+    "no-plusplus": "off",
     "indent": ["error", "tab"],
     "jsx-quotes": ["error", "prefer-single"],
+    "new-cap": "off",
+    "no-tabs": "off",
+    "no-underscore-dangle": "off",
     "space-before-function-paren": 0,
     "react/jsx-boolean-value": ["error", "always"],
     "react/jsx-closing-bracket-location": ["error", {

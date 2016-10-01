@@ -1,19 +1,19 @@
 import React, { PropTypes, Component } from 'react';
 import Item from '../data/item';
 
-class Item extends Component {
+class ItemDisplay extends Component {
 	render() {
 		return (
-			<div onClick={ this.props.onClick } className='item'>
+			<button onClick={this.props.onClick} className='item'>
 				{ this.props.item.id }
-			</div>
+			</button>
 		);
 	}
 }
 
-Item.propTypes = {
+ItemDisplay.propTypes = {
 	onClick: PropTypes.func.isRequired,
 	item: PropTypes.instanceOf(Item).isRequired,
 };
 
-export default Item;
+export default ItemDisplay;
