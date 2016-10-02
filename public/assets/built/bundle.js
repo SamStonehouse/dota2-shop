@@ -23039,33 +23039,73 @@
 	
 	var _availableItem2 = _interopRequireDefault(_availableItem);
 	
-	var _recipes = __webpack_require__(199);
+	var _items = __webpack_require__(199);
+	
+	var _items2 = _interopRequireDefault(_items);
+	
+	var _recipes = __webpack_require__(201);
 	
 	var _recipes2 = _interopRequireDefault(_recipes);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function _initialState() {
-		var allRecipes = _recipes2.default.sort(function () {
-			return Math.random() - 0.5;
+	function _getRandomItem() {
+		var randomIndex = Math.floor(Math.random() * _items2.default.size);
+		return _items2.default.get(randomIndex);
+	}
+	
+	function _getRandomItems(count) {
+		return new _immutable.List().setSize(count).map(function () {
+			return _getRandomItem();
 		});
-		var currentRecipe = allRecipes.last();
-		var remainingRecipes = allRecipes.pop();
-		var availableItems = currentRecipe.get('components').map(function (item) {
+	}
+	
+	function _shuffleList(list) {
+		var mutableList = list.asMutable();
+		var currentIndex = mutableList.size;
+		while (currentIndex !== 0) {
+			var randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex -= 1;
+			var temp = mutableList.get(currentIndex);
+			mutableList.set(currentIndex, mutableList.get(randomIndex));
+			mutableList.set(randomIndex, temp);
+		}
+	
+		return mutableList.asImmutable();
+	}
+	
+	function _nextRecipe(_state) {
+		var state = _state;
+		state = state.set('currentRecipe', state.get('remainingRecipes').last());
+		state = state.set('remainingRecipes', state.get('remainingRecipes').pop());
+		state = state.set('availableItems', state.get('currentRecipe').get('components').map(function (item) {
+			return new _availableItem2.default({ item: item });
+		}));
+		var additionalItems = _getRandomItems(5).map(function (item) {
 			return new _availableItem2.default({ item: item });
 		});
+		state = state.set('availableItems', _shuffleList(state.get('availableItems').concat(additionalItems)));
+		return state;
+	}
 	
-		return new _immutable.Map({
-			availableItems: availableItems,
+	function _initialState() {
+		var remainingRecipes = _shuffleList(_recipes2.default);
+	
+		var state = new _immutable.Map({
+			availableItems: new _immutable.List([]),
 			selectedItems: new _immutable.List([]),
 			remainingRecipes: remainingRecipes,
-			currentRecipe: currentRecipe,
+			currentRecipe: null,
 			completedRecipes: new _immutable.List([]),
 			points: 0
 		});
-	}
-	// import items from '../data/items';
 	
+		if (state.get('remainingRecipes').size > 0) {
+			state = _nextRecipe(state);
+		}
+	
+		return state;
+	}
 	
 	var initialStore = _initialState();
 	
@@ -23117,11 +23157,7 @@
 		state = state.set('selectedItems', new _immutable.List([]));
 	
 		if (state.get('remainingRecipes').size > 0) {
-			state = state.set('currentRecipe', state.get('remainingRecipes').last());
-			state = state.set('remainingRecipes', state.get('remainingRecipes').pop());
-			state = state.set('availableItems', state.get('currentRecipe').get('components').map(function (item) {
-				return new _availableItem2.default({ item: item });
-			}));
+			state = _nextRecipe(state);
 		} else {
 			state = state.set('currentRecipe', undefined);
 			state = state.set('availableItems', new _immutable.List([]));
@@ -23153,11 +23189,7 @@
 		state = state.set('completedRecipes', state.get('completedRecipes').push(state.get('currentRecipe')));
 		state = state.set('selectedItems', new _immutable.List([]));
 		if (state.remainingRecipes.length > 0) {
-			state = state.set('currentRecipe', state.get('remainingRecipes').last());
-			state = state.set('remainingRecipes', state.get('remainingRecipes').pop());
-			state = state.set('availableItems', state.currentRecipe.get('components').map(function (item) {
-				return new _availableItem2.default({ item: item });
-			}));
+			state = _nextRecipe(state);
 		} else {
 			state = state.set('currentRecipe', undefined);
 			state = state.set('availableItems', new _immutable.List([]));
@@ -28202,17 +28234,24 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
+	var idIndex = 0;
+	
 	var _AvailableItem = {
-		item: ''
+		item: '',
+		id: -1
 	};
 	
 	var AvailableItem = function (_Record) {
 		_inherits(AvailableItem, _Record);
 	
-		function AvailableItem() {
+		function AvailableItem(_props) {
 			_classCallCheck(this, AvailableItem);
 	
-			return _possibleConstructorReturn(this, (AvailableItem.__proto__ || Object.getPrototypeOf(AvailableItem)).apply(this, arguments));
+			var props = _props;
+			if (!{}.hasOwnProperty.call(props, 'id')) {
+				props.id = idIndex++;
+			}
+			return _possibleConstructorReturn(this, (AvailableItem.__proto__ || Object.getPrototypeOf(AvailableItem)).call(this, props));
 		}
 	
 		return AvailableItem;
@@ -28228,87 +28267,7 @@
 	
 	var _immutable = __webpack_require__(196);
 	
-	var _recipe = __webpack_require__(200);
-	
-	var _recipe2 = _interopRequireDefault(_recipe);
-	
-	var _items = __webpack_require__(201);
-	
-	var _items2 = _interopRequireDefault(_items);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function getItem(id) {
-		return _items2.default.find(function (_item) {
-			return _item.id === id;
-		});
-	}
-	
-	var recipes = [{
-		name: 'Heart of Tarrasque',
-		components: [getItem('reaver'), getItem('vitality_booster'), getItem('recipe')]
-	}, {
-		name: 'Yasha',
-		components: [getItem('quelling_blade'), getItem('gauntlets'), getItem('recipe')]
-	}];
-	
-	module.exports = new _immutable.List(recipes).map(function (recipe) {
-		return _recipe2.default.createFromData(recipe);
-	});
-
-/***/ },
-/* 200 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _immutable = __webpack_require__(196);
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var _Recipe = {
-		name: '',
-		components: new _immutable.List([])
-	};
-	
-	var Recipe = function (_Record) {
-		_inherits(Recipe, _Record);
-	
-		function Recipe() {
-			_classCallCheck(this, Recipe);
-	
-			return _possibleConstructorReturn(this, (Recipe.__proto__ || Object.getPrototypeOf(Recipe)).apply(this, arguments));
-		}
-	
-		return Recipe;
-	}((0, _immutable.Record)(_Recipe));
-	
-	Recipe.createFromData = function (data) {
-		return new Recipe({
-			name: data.name,
-			components: new _immutable.List(data.components)
-		});
-	};
-	
-	exports.default = Recipe;
-
-/***/ },
-/* 201 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _immutable = __webpack_require__(196);
-	
-	var _item = __webpack_require__(202);
+	var _item = __webpack_require__(200);
 	
 	var _item2 = _interopRequireDefault(_item);
 	
@@ -28643,7 +28602,7 @@
 	});
 
 /***/ },
-/* 202 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28680,6 +28639,86 @@
 	exports.default = Item;
 
 /***/ },
+/* 201 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _immutable = __webpack_require__(196);
+	
+	var _recipe = __webpack_require__(202);
+	
+	var _recipe2 = _interopRequireDefault(_recipe);
+	
+	var _items = __webpack_require__(199);
+	
+	var _items2 = _interopRequireDefault(_items);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function getItem(id) {
+		return _items2.default.find(function (_item) {
+			return _item.id === id;
+		});
+	}
+	
+	var recipes = [{
+		name: 'Heart of Tarrasque',
+		components: [getItem('reaver'), getItem('vitality_booster'), getItem('recipe')]
+	}, {
+		name: 'Yasha',
+		components: [getItem('quelling_blade'), getItem('gauntlets'), getItem('recipe')]
+	}];
+	
+	module.exports = new _immutable.List(recipes).map(function (recipe) {
+		return _recipe2.default.createFromData(recipe);
+	});
+
+/***/ },
+/* 202 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _immutable = __webpack_require__(196);
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var _Recipe = {
+		name: '',
+		components: new _immutable.List([])
+	};
+	
+	var Recipe = function (_Record) {
+		_inherits(Recipe, _Record);
+	
+		function Recipe() {
+			_classCallCheck(this, Recipe);
+	
+			return _possibleConstructorReturn(this, (Recipe.__proto__ || Object.getPrototypeOf(Recipe)).apply(this, arguments));
+		}
+	
+		return Recipe;
+	}((0, _immutable.Record)(_Recipe));
+	
+	Recipe.createFromData = function (data) {
+		return new Recipe({
+			name: data.name,
+			components: new _immutable.List(data.components)
+		});
+	};
+	
+	exports.default = Recipe;
+
+/***/ },
 /* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -28711,7 +28750,7 @@
 	
 	var _selectedItems2 = _interopRequireDefault(_selectedItems);
 	
-	var _recipe = __webpack_require__(200);
+	var _recipe = __webpack_require__(202);
 	
 	var _recipe2 = _interopRequireDefault(_recipe);
 	
@@ -28899,7 +28938,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _item = __webpack_require__(202);
+	var _item = __webpack_require__(200);
 	
 	var _item2 = _interopRequireDefault(_item);
 	

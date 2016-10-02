@@ -2,24 +2,63 @@ import { List, Map } from 'immutable';
 
 import { RESET, ITEM_SELECTED, ITEM_UNSELECTED } from '../constants/action-types';
 import AvailableItem from '../data/available-item';
-// import items from '../data/items';
+import items from '../data/items';
 import recipes from '../data/recipes';
 
-function _initialState() {
-	const allRecipes = recipes.sort(() => (Math.random() - 0.5));
-	const currentRecipe = allRecipes.last();
-	const remainingRecipes = allRecipes.pop();
-	const availableItems = currentRecipe.get('components').map(item => new AvailableItem({ item }));
+function _getRandomItem() {
+	const randomIndex = Math.floor(Math.random() * items.size);
+	return items.get(randomIndex);
+}
 
-	return new Map({
-		availableItems,
+function _getRandomItems(count) {
+	return new List().setSize(count).map(() => _getRandomItem());
+}
+
+function _shuffleList(list) {
+	const mutableList = list.asMutable();
+	let currentIndex = mutableList.size;
+	while (currentIndex !== 0) {
+		const randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
+		const temp = mutableList.get(currentIndex);
+		mutableList.set(currentIndex, mutableList.get(randomIndex));
+		mutableList.set(randomIndex, temp);
+	}
+
+	return mutableList.asImmutable();
+}
+
+function _nextRecipe(_state) {
+	let state = _state;
+	state = state.set('currentRecipe', state.get('remainingRecipes').last());
+	state = state.set('remainingRecipes', state.get('remainingRecipes').pop());
+	state = state.set('availableItems',
+		state.get('currentRecipe').get('components').map(item => new AvailableItem({ item }))
+	);
+	const additionalItems = _getRandomItems(5).map(item => new AvailableItem({ item }));
+	state = state.set('availableItems', _shuffleList(state.get('availableItems').concat(additionalItems)));
+	return state;
+}
+
+function _initialState() {
+	const remainingRecipes = _shuffleList(recipes);
+
+	let state = new Map({
+		availableItems: new List([]),
 		selectedItems: new List([]),
 		remainingRecipes,
-		currentRecipe,
+		currentRecipe: null,
 		completedRecipes: new List([]),
 		points: 0,
 	});
+
+	if (state.get('remainingRecipes').size > 0) {
+		state = _nextRecipe(state);
+	}
+
+	return state;
 }
+
 
 const initialStore = _initialState();
 
@@ -71,11 +110,7 @@ function itemSelected(action, _state) {
 	state = state.set('selectedItems', new List([]));
 
 	if (state.get('remainingRecipes').size > 0) {
-		state = state.set('currentRecipe', state.get('remainingRecipes').last());
-		state = state.set('remainingRecipes', state.get('remainingRecipes').pop());
-		state = state.set('availableItems',
-			state.get('currentRecipe').get('components').map(item => new AvailableItem({ item }))
-		);
+		state = _nextRecipe(state);
 	} else {
 		state = state.set('currentRecipe', undefined);
 		state = state.set('availableItems', new List([]));
@@ -105,11 +140,7 @@ function reset(action, _state) {
 	state = state.set('completedRecipes', state.get('completedRecipes').push(state.get('currentRecipe')));
 	state = state.set('selectedItems', new List([]));
 	if (state.remainingRecipes.length > 0) {
-		state = state.set('currentRecipe', state.get('remainingRecipes').last());
-		state = state.set('remainingRecipes', state.get('remainingRecipes').pop());
-		state = state.set('availableItems',
-			state.currentRecipe.get('components').map(item => new AvailableItem({ item }))
-		);
+		state = _nextRecipe(state);
 	} else {
 		state = state.set('currentRecipe', undefined);
 		state = state.set('availableItems', new List([]));
