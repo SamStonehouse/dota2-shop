@@ -5,7 +5,7 @@ class ItemDisplay extends Component {
 	render() {
 		return (
 			<button onClick={this.props.onClick} className='item'>
-				{ this.props.item.id }
+				<img src={`/assets/images/${this.props.item.id}.png`} alt={this.props.item.id} />
 			</button>
 		);
 	}

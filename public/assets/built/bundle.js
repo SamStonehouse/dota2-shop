@@ -28965,7 +28965,7 @@
 				return _react2.default.createElement(
 					'button',
 					{ onClick: this.props.onClick, className: 'item' },
-					this.props.item.id
+					_react2.default.createElement('img', { src: '/assets/images/' + this.props.item.id + '.png', alt: this.props.item.id })
 				);
 			}
 		}]);
