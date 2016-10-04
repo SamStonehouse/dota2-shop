@@ -45,11 +45,20 @@ body {
 }
 
 .item-container {
-	display: inline-block;
 	vertical-align: top;
 }
 
-.item {
+.item-slot {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-image: url('/assets/images/item-slot-unknown.png')
+}
+
+.item, .item-container, .item-slot {
+	vertical-align: top;
+	border-radius: 2px;
+	box-sizing: border-box;
 	display: inline-block;
 
 	border: 0;
@@ -57,8 +66,9 @@ body {
 	padding: 0;
 	width:60px;
 	height: 48px;
+}
 
-	border-radius: 2px;
+.item {
 	border: 1px solid $primary;
 
 	background-position: center;
@@ -85,7 +95,11 @@ body {
 }
 
 .available-items, .selected-items {
-	.item-container {
+	.item-container, .item-slot {
 		margin: 5px;
 	}
+}
+
+.item-slot {
+	background-color: #fff;
 }

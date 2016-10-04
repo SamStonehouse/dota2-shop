@@ -23057,7 +23057,7 @@
 	exports.i(__webpack_require__(198), "");
 	
 	// module
-	exports.push([module.id, "html, body {\n  min-height: 100%;\n  height: 100%; }\n\nbody {\n  background-color: #333;\n  color: #bbb; }\n\n.container {\n  min-height: 100%;\n  display: flex;\n  justify-content: center; }\n\n.app-container {\n  flex: 1;\n  max-width: 800px; }\n\n.title {\n  text-align: center;\n  font-size: 50px;\n  line-height: 120px;\n  margin: 0;\n  padding: 0; }\n\n.dota-logo {\n  height: 80px;\n  vertical-align: middle; }\n\n#app {\n  text-align: center; }\n\n.item-container {\n  display: inline-block;\n  vertical-align: top; }\n\n.item {\n  display: inline-block;\n  border: 0;\n  margin: 0;\n  padding: 0;\n  width: 60px;\n  height: 48px;\n  border-radius: 2px;\n  border: 1px solid #c2251e;\n  background-position: center;\n  background-repeat: no-repeat;\n  background-size: cover;\n  cursor: pointer; }\n  .item:hover {\n    border: 0; }\n  .item:active {\n    border: 2px solid #c2251e; }\n  .item:focus {\n    outline: 1px solid #c2251e; }\n\n.selected .item {\n  opacity: 0.6; }\n\n.available-items .item-container, .selected-items .item-container {\n  margin: 5px; }\n", ""]);
+	exports.push([module.id, "html, body {\n  min-height: 100%;\n  height: 100%; }\n\nbody {\n  background-color: #333;\n  color: #bbb; }\n\n.container {\n  min-height: 100%;\n  display: flex;\n  justify-content: center; }\n\n.app-container {\n  flex: 1;\n  max-width: 800px; }\n\n.title {\n  text-align: center;\n  font-size: 50px;\n  line-height: 120px;\n  margin: 0;\n  padding: 0; }\n\n.dota-logo {\n  height: 80px;\n  vertical-align: middle; }\n\n#app {\n  text-align: center; }\n\n.item-container {\n  vertical-align: top; }\n\n.item-slot {\n  background-position: center;\n  background-repeat: no-repeat;\n  background-size: cover;\n  background-image: url(\"/assets/images/item-slot-unknown.png\"); }\n\n.item, .item-container, .item-slot {\n  vertical-align: top;\n  border-radius: 2px;\n  box-sizing: border-box;\n  display: inline-block;\n  border: 0;\n  margin: 0;\n  padding: 0;\n  width: 60px;\n  height: 48px; }\n\n.item {\n  border: 1px solid #c2251e;\n  background-position: center;\n  background-repeat: no-repeat;\n  background-size: cover;\n  cursor: pointer; }\n  .item:hover {\n    border: 0; }\n  .item:active {\n    border: 2px solid #c2251e; }\n  .item:focus {\n    outline: 1px solid #c2251e; }\n\n.selected .item {\n  opacity: 0.6; }\n\n.available-items .item-container, .available-items .item-slot, .selected-items .item-container, .selected-items .item-slot {\n  margin: 5px; }\n\n.item-slot {\n  background-color: #fff; }\n", ""]);
 	
 	// exports
 
@@ -23445,6 +23445,7 @@
 		state = state.set('availableItems', state.get('currentRecipe').get('components').map(function (item) {
 			return new _availableItem2.default({ item: item });
 		}));
+		state = state.set('selectedItems', new _immutable.List().setSize(state.get('currentRecipe').components.size));
 		var additionalItems = _getRandomItems(5).map(function (item) {
 			return new _availableItem2.default({ item: item });
 		});
@@ -23485,13 +23486,19 @@
 			return state;
 		}
 	
-		state = state.set('selectedItems', state.get('selectedItems').push(action.availableItem));
+		var firstEmptyIndex = state.get('selectedItems').findKey(function (availableItem) {
+			return availableItem === undefined;
+		});
+	
+		state = state.set('selectedItems', state.get('selectedItems').set(firstEmptyIndex, action.availableItem));
 	
 		var correctItemIds = state.get('currentRecipe').get('components').map(function (item) {
 			return item.get('id');
 		}).sort(lexographicSort);
 	
-		var selectedItemIds = state.get('selectedItems').map(function (availableItem) {
+		var selectedItemIds = state.get('selectedItems').filter(function (availableItem) {
+			return availableItem !== undefined;
+		}).map(function (availableItem) {
 			return availableItem.item.id;
 		}).sort(lexographicSort);
 	
@@ -23545,7 +23552,7 @@
 			return state;
 		}
 	
-		return state.set('selectedItems', state.get('selectedItems').delete(itemIndex));
+		return state.set('selectedItems', state.get('selectedItems').set(itemIndex, undefined));
 	}
 	
 	function reset(action, _state) {
@@ -29370,6 +29377,10 @@
 	
 	var _itemDisplay2 = _interopRequireDefault(_itemDisplay);
 	
+	var _itemSlot = __webpack_require__(213);
+	
+	var _itemSlot2 = _interopRequireDefault(_itemSlot);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -29386,21 +29397,27 @@
 	
 			var _this = _possibleConstructorReturn(this, (SelectedItems.__proto__ || Object.getPrototypeOf(SelectedItems)).call(this));
 	
+			_this.renderSlot = _this.renderSlot.bind(_this);
 			_this.renderItem = _this.renderItem.bind(_this);
 			return _this;
 		}
 	
 		_createClass(SelectedItems, [{
 			key: 'renderItem',
-			value: function renderItem(availableItem, index) {
+			value: function renderItem(availableItem) {
 				var _this2 = this;
 	
+				return _react2.default.createElement(_itemDisplay2.default, { item: availableItem.item, onClick: function onClick() {
+						_this2.props.onUnselect(availableItem);
+					} });
+			}
+		}, {
+			key: 'renderSlot',
+			value: function renderSlot(availableItem, index) {
 				return _react2.default.createElement(
-					'span',
-					{ key: index, className: 'item-container' },
-					_react2.default.createElement(_itemDisplay2.default, { item: availableItem.item, onClick: function onClick() {
-							_this2.props.onUnselect(availableItem);
-						} })
+					_itemSlot2.default,
+					{ key: index },
+					availableItem ? this.renderItem(availableItem) : null
 				);
 			}
 		}, {
@@ -29409,7 +29426,7 @@
 				return _react2.default.createElement(
 					'div',
 					{ className: 'selected-items' },
-					this.props.selectedItems.map(this.renderItem)
+					this.props.selectedItems.map(this.renderSlot)
 				);
 			}
 		}]);
@@ -29423,6 +29440,59 @@
 	};
 	
 	exports.default = SelectedItems;
+
+/***/ },
+/* 213 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var ItemSlot = function (_Component) {
+		_inherits(ItemSlot, _Component);
+	
+		function ItemSlot() {
+			_classCallCheck(this, ItemSlot);
+	
+			return _possibleConstructorReturn(this, (ItemSlot.__proto__ || Object.getPrototypeOf(ItemSlot)).apply(this, arguments));
+		}
+	
+		_createClass(ItemSlot, [{
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'item-slot' },
+					this.props.children
+				);
+			}
+		}]);
+	
+		return ItemSlot;
+	}(_react.Component);
+	
+	ItemSlot.propTypes = {
+		children: _react.PropTypes.element
+	};
+	
+	exports.default = ItemSlot;
 
 /***/ }
 /******/ ]);

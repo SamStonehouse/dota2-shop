@@ -35,6 +35,7 @@ function _nextRecipe(_state) {
 	state = state.set('availableItems',
 		state.get('currentRecipe').get('components').map(item => new AvailableItem({ item }))
 	);
+	state = state.set('selectedItems', new List().setSize(state.get('currentRecipe').components.size));
 	const additionalItems = _getRandomItems(5).map(item => new AvailableItem({ item }));
 	state = state.set('availableItems', _shuffleList(state.get('availableItems').concat(additionalItems)));
 	return state;
@@ -74,13 +75,16 @@ function itemSelected(action, _state) {
 		return state;
 	}
 
-	state = state.set('selectedItems', state.get('selectedItems').push(action.availableItem));
+	const firstEmptyIndex = state.get('selectedItems').findKey(availableItem => availableItem === undefined);
+
+	state = state.set('selectedItems', state.get('selectedItems').set(firstEmptyIndex, action.availableItem));
 
 	const correctItemIds = state.get('currentRecipe').get('components')
 		.map(item => item.get('id'))
 		.sort(lexographicSort);
 
 	const selectedItemIds = state.get('selectedItems')
+		.filter(availableItem => availableItem !== undefined)
 		.map(availableItem => availableItem.item.id)
 		.sort(lexographicSort);
 
@@ -132,7 +136,7 @@ function itemUnselected(action, state) {
 		return state;
 	}
 
-	return state.set('selectedItems', state.get('selectedItems').delete(itemIndex));
+	return state.set('selectedItems', state.get('selectedItems').set(itemIndex, undefined));
 }
 
 function reset(action, _state) {

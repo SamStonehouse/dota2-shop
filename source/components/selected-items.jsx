@@ -2,26 +2,32 @@ import React, { PropTypes, Component } from 'react';
 import { List } from 'immutable';
 
 import ItemDisplay from './item-display';
+import ItemSlot from './item-slot';
 
 class SelectedItems extends Component {
 
 	constructor() {
 		super();
+		this.renderSlot = this.renderSlot.bind(this);
 		this.renderItem = this.renderItem.bind(this);
 	}
 
-	renderItem(availableItem, index) {
+	renderItem(availableItem) {
+		return (<ItemDisplay item={availableItem.item} onClick={() => { this.props.onUnselect(availableItem); }} />);
+	}
+
+	renderSlot(availableItem, index) {
 		return (
-			<span key={index} className='item-container'>
-				<ItemDisplay item={availableItem.item} onClick={() => { this.props.onUnselect(availableItem); }} />
-			</span>
+			<ItemSlot key={index}>
+				{ availableItem ? this.renderItem(availableItem) : null }
+			</ItemSlot>
 		);
 	}
 
 	render() {
 		return (
 			<div className='selected-items'>
-				{ this.props.selectedItems.map(this.renderItem) }
+				{ this.props.selectedItems.map(this.renderSlot) }
 			</div>
 		);
 	}
