@@ -10,7 +10,7 @@ function getStyle(imgUrl) {
 class ItemDisplay extends Component {
 	render() {
 		return (
-			<button onClick={this.props.onClick} className='item' style={getStyle(`/assets/images/${this.props.item.id}.png`)} />
+			<button onClick={this.props.onClick} className='item' style={getStyle(`/assets/images/items/${this.props.item.id}.png`)} />
 		);
 	}
 }

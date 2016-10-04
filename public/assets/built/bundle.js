@@ -58,11 +58,11 @@
 	
 	__webpack_require__(195);
 	
-	var _recipes = __webpack_require__(199);
+	var _recipes = __webpack_require__(200);
 	
 	var _recipes2 = _interopRequireDefault(_recipes);
 	
-	var _recipeGame = __webpack_require__(207);
+	var _recipeGame = __webpack_require__(208);
 	
 	var _recipeGame2 = _interopRequireDefault(_recipeGame);
 	
@@ -23032,7 +23032,7 @@
 	var content = __webpack_require__(196);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(198)(content, {});
+	var update = __webpack_require__(199)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -23054,10 +23054,10 @@
 
 	exports = module.exports = __webpack_require__(197)();
 	// imports
-	
+	exports.i(__webpack_require__(198), "");
 	
 	// module
-	exports.push([module.id, ".item-container {\n  display: inline-block;\n  vertical-align: top; }\n\n.item {\n  display: inline-block;\n  border: 0;\n  margin: 0;\n  padding: 0;\n  width: 60px;\n  height: 48px;\n  border-radius: 1px;\n  border: 1px solid #333;\n  background-position: center;\n  background-repeat: no-repeat;\n  background-size: cover;\n  cursor: pointer; }\n\n.selected .item {\n  opacity: 0.6; }\n\n.available-items .item-container, .selected-items .item-container {\n  margin: 5px; }\n", ""]);
+	exports.push([module.id, "html, body {\n  min-height: 100%;\n  height: 100%; }\n\nbody {\n  background-color: #333;\n  color: #bbb; }\n\n.container {\n  min-height: 100%;\n  display: flex;\n  justify-content: center; }\n\n.app-container {\n  flex: 1;\n  max-width: 800px; }\n\n.title {\n  text-align: center;\n  font-size: 50px;\n  line-height: 120px;\n  margin: 0;\n  padding: 0; }\n\n.dota-logo {\n  height: 80px;\n  vertical-align: middle; }\n\n#app {\n  text-align: center; }\n\n.item-container {\n  display: inline-block;\n  vertical-align: top; }\n\n.item {\n  display: inline-block;\n  border: 0;\n  margin: 0;\n  padding: 0;\n  width: 60px;\n  height: 48px;\n  border-radius: 2px;\n  border: 1px solid #c2251e;\n  background-position: center;\n  background-repeat: no-repeat;\n  background-size: cover;\n  cursor: pointer; }\n  .item:hover {\n    border: 0; }\n  .item:active {\n    border: 2px solid #c2251e; }\n  .item:focus {\n    outline: 1px solid #c2251e; }\n\n.selected .item {\n  opacity: 0.6; }\n\n.available-items .item-container, .selected-items .item-container {\n  margin: 5px; }\n", ""]);
 	
 	// exports
 
@@ -23120,6 +23120,20 @@
 
 /***/ },
 /* 198 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(197)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "/*! normalize.css v4.1.1 | MIT License | github.com/necolas/normalize.css */\n\n/**\n * 1. Change the default font family in all browsers (opinionated).\n * 2. Correct the line height in all browsers.\n * 3. Prevent adjustments of font size after orientation changes in IE and iOS.\n */\n\nhtml {\n  font-family: sans-serif; /* 1 */\n  line-height: 1.15; /* 2 */\n  -ms-text-size-adjust: 100%; /* 3 */\n  -webkit-text-size-adjust: 100%; /* 3 */\n}\n\n/**\n * Remove the margin in all browsers (opinionated).\n */\n\nbody {\n  margin: 0;\n}\n\n/* HTML5 display definitions\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n * 2. Add the correct display in IE.\n */\n\narticle,\naside,\ndetails, /* 1 */\nfigcaption,\nfigure,\nfooter,\nheader,\nmain, /* 2 */\nmenu,\nnav,\nsection,\nsummary { /* 1 */\n  display: block;\n}\n\n/**\n * Add the correct display in IE 9-.\n */\n\naudio,\ncanvas,\nprogress,\nvideo {\n  display: inline-block;\n}\n\n/**\n * Add the correct display in iOS 4-7.\n */\n\naudio:not([controls]) {\n  display: none;\n  height: 0;\n}\n\n/**\n * Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\n\nprogress {\n  vertical-align: baseline;\n}\n\n/**\n * Add the correct display in IE 10-.\n * 1. Add the correct display in IE.\n */\n\ntemplate, /* 1 */\n[hidden] {\n  display: none;\n}\n\n/* Links\n   ========================================================================== */\n\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\n\na {\n  background-color: transparent; /* 1 */\n  -webkit-text-decoration-skip: objects; /* 2 */\n}\n\n/**\n * Remove the outline on focused links when they are also active or hovered\n * in all browsers (opinionated).\n */\n\na:active,\na:hover {\n  outline-width: 0;\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * 1. Remove the bottom border in Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\n\nabbr[title] {\n  border-bottom: none; /* 1 */\n  text-decoration: underline; /* 2 */\n  text-decoration: underline dotted; /* 2 */\n}\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\n\nb,\nstrong {\n  font-weight: inherit;\n}\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/**\n * Add the correct font style in Android 4.3-.\n */\n\ndfn {\n  font-style: italic;\n}\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/**\n * Add the correct background and color in IE 9-.\n */\n\nmark {\n  background-color: #ff0;\n  color: #000;\n}\n\n/**\n * Add the correct font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\n\nimg {\n  border-style: none;\n}\n\n/**\n * Hide the overflow in IE.\n */\n\nsvg:not(:root) {\n  overflow: hidden;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\ncode,\nkbd,\npre,\nsamp {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/**\n * Add the correct margin in IE 8.\n */\n\nfigure {\n  margin: 1em 40px;\n}\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\n\nhr {\n  box-sizing: content-box; /* 1 */\n  height: 0; /* 1 */\n  overflow: visible; /* 2 */\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * 1. Change font properties to `inherit` in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font: inherit; /* 1 */\n  margin: 0; /* 2 */\n}\n\n/**\n * Restore the font weight unset by the previous rule.\n */\n\noptgroup {\n  font-weight: bold;\n}\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\n\nbutton,\ninput { /* 1 */\n  overflow: visible;\n}\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\n\nbutton,\nselect { /* 1 */\n  text-transform: none;\n}\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\n\nbutton,\nhtml [type=\"button\"], /* 1 */\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button; /* 2 */\n}\n\n/**\n * Remove the inner border and padding in Firefox.\n */\n\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0;\n}\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\n\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText;\n}\n\n/**\n * Change the border, margin, and padding in all browsers (opinionated).\n */\n\nfieldset {\n  border: 1px solid #c0c0c0;\n  margin: 0 2px;\n  padding: 0.35em 0.625em 0.75em;\n}\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\n\nlegend {\n  box-sizing: border-box; /* 1 */\n  color: inherit; /* 2 */\n  display: table; /* 1 */\n  max-width: 100%; /* 1 */\n  padding: 0; /* 3 */\n  white-space: normal; /* 1 */\n}\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n\n[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on OS X.\n */\n\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * Correct the text style of placeholders in Chrome, Edge, and Safari.\n */\n\n::-webkit-input-placeholder {\n  color: inherit;\n  opacity: 0.54;\n}\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -23371,7 +23385,7 @@
 
 
 /***/ },
-/* 199 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23381,19 +23395,19 @@
 	});
 	exports.default = events;
 	
-	var _immutable = __webpack_require__(200);
+	var _immutable = __webpack_require__(201);
 	
-	var _actionTypes = __webpack_require__(201);
+	var _actionTypes = __webpack_require__(202);
 	
-	var _availableItem = __webpack_require__(202);
+	var _availableItem = __webpack_require__(203);
 	
 	var _availableItem2 = _interopRequireDefault(_availableItem);
 	
-	var _items = __webpack_require__(203);
+	var _items = __webpack_require__(204);
 	
 	var _items2 = _interopRequireDefault(_items);
 	
-	var _recipes = __webpack_require__(205);
+	var _recipes = __webpack_require__(206);
 	
 	var _recipes2 = _interopRequireDefault(_recipes);
 	
@@ -23568,7 +23582,7 @@
 	}
 
 /***/ },
-/* 200 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -28552,7 +28566,7 @@
 	}));
 
 /***/ },
-/* 201 */
+/* 202 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -28567,7 +28581,7 @@
 	var ITEM_UNSELECTED = exports.ITEM_UNSELECTED = 'ITEM_UNSELECTED';
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28576,7 +28590,7 @@
 		value: true
 	});
 	
-	var _immutable = __webpack_require__(200);
+	var _immutable = __webpack_require__(201);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -28610,14 +28624,14 @@
 	exports.default = AvailableItem;
 
 /***/ },
-/* 203 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _immutable = __webpack_require__(200);
+	var _immutable = __webpack_require__(201);
 	
-	var _item = __webpack_require__(204);
+	var _item = __webpack_require__(205);
 	
 	var _item2 = _interopRequireDefault(_item);
 	
@@ -28952,7 +28966,7 @@
 	});
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28961,7 +28975,7 @@
 		value: true
 	});
 	
-	var _immutable = __webpack_require__(200);
+	var _immutable = __webpack_require__(201);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -28989,18 +29003,18 @@
 	exports.default = Item;
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _immutable = __webpack_require__(200);
+	var _immutable = __webpack_require__(201);
 	
-	var _recipe = __webpack_require__(206);
+	var _recipe = __webpack_require__(207);
 	
 	var _recipe2 = _interopRequireDefault(_recipe);
 	
-	var _items = __webpack_require__(203);
+	var _items = __webpack_require__(204);
 	
 	var _items2 = _interopRequireDefault(_items);
 	
@@ -29025,7 +29039,7 @@
 	});
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29034,7 +29048,7 @@
 		value: true
 	});
 	
-	var _immutable = __webpack_require__(200);
+	var _immutable = __webpack_require__(201);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -29069,7 +29083,7 @@
 	exports.default = Recipe;
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29084,23 +29098,23 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _immutable = __webpack_require__(200);
+	var _immutable = __webpack_require__(201);
 	
 	var _redux = __webpack_require__(172);
 	
 	var _reactRedux = __webpack_require__(186);
 	
-	var _itemActionCreators = __webpack_require__(208);
+	var _itemActionCreators = __webpack_require__(209);
 	
-	var _availableItems = __webpack_require__(209);
+	var _availableItems = __webpack_require__(210);
 	
 	var _availableItems2 = _interopRequireDefault(_availableItems);
 	
-	var _selectedItems = __webpack_require__(211);
+	var _selectedItems = __webpack_require__(212);
 	
 	var _selectedItems2 = _interopRequireDefault(_selectedItems);
 	
-	var _recipe = __webpack_require__(206);
+	var _recipe = __webpack_require__(207);
 	
 	var _recipe2 = _interopRequireDefault(_recipe);
 	
@@ -29169,7 +29183,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(RecipeGame);
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29180,7 +29194,7 @@
 	exports.itemSelected = itemSelected;
 	exports.itemUnselected = itemUnselected;
 	
-	var _actionTypes = __webpack_require__(201);
+	var _actionTypes = __webpack_require__(202);
 	
 	function itemSelected(availableItem) {
 		return {
@@ -29197,7 +29211,7 @@
 	}
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29212,9 +29226,9 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _immutable = __webpack_require__(200);
+	var _immutable = __webpack_require__(201);
 	
-	var _itemDisplay = __webpack_require__(210);
+	var _itemDisplay = __webpack_require__(211);
 	
 	var _itemDisplay2 = _interopRequireDefault(_itemDisplay);
 	
@@ -29275,7 +29289,7 @@
 	exports.default = AvailableItems;
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29290,7 +29304,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _item = __webpack_require__(204);
+	var _item = __webpack_require__(205);
 	
 	var _item2 = _interopRequireDefault(_item);
 	
@@ -29320,7 +29334,7 @@
 		_createClass(ItemDisplay, [{
 			key: 'render',
 			value: function render() {
-				return _react2.default.createElement('button', { onClick: this.props.onClick, className: 'item', style: getStyle('/assets/images/' + this.props.item.id + '.png') });
+				return _react2.default.createElement('button', { onClick: this.props.onClick, className: 'item', style: getStyle('/assets/images/items/' + this.props.item.id + '.png') });
 			}
 		}]);
 	
@@ -29335,7 +29349,7 @@
 	exports.default = ItemDisplay;
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29350,9 +29364,9 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _immutable = __webpack_require__(200);
+	var _immutable = __webpack_require__(201);
 	
-	var _itemDisplay = __webpack_require__(210);
+	var _itemDisplay = __webpack_require__(211);
 	
 	var _itemDisplay2 = _interopRequireDefault(_itemDisplay);
 	
