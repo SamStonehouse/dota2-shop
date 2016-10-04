@@ -14,7 +14,7 @@ class RecipeGame extends Component {
 			<p>Current Recipe: { this.props.currentRecipe.name }</p>
 			<SelectedItems onUnselect={this.props.onUnselect} selectedItems={this.props.selectedItems} />
 			<hr />
-			<AvailableItems onUnselect={this.props.onUnselect} onSelect={this.props.onSelect} availableItems={this.props.availableItems} />
+			<AvailableItems onSelect={this.props.onSelect} selectedItems={this.props.selectedItems} availableItems={this.props.availableItems} />
 		</div>);
 	}
 }

@@ -11,16 +11,17 @@ class AvailableItems extends Component {
 	}
 
 	renderItem(availableItem, index) {
+		const selected = this.props.selectedItems.contains(availableItem);
 		return (
-			<div className={availableItem.selected ? 'selected' : null} key={index} >
+			<span className={`${selected ? 'selected' : null} item-container`} key={index} >
 				<ItemDisplay item={availableItem.item} onClick={() => { this.props.onSelect(availableItem); }} />
-			</div>
+			</span>
 		);
 	}
 
 	render() {
 		return (
-			<div>
+			<div className='available-items'>
 				{ this.props.availableItems.map(this.renderItem) }
 			</div>
 		);
@@ -30,6 +31,7 @@ class AvailableItems extends Component {
 AvailableItems.propTypes = {
 	onSelect: PropTypes.func.isRequired,
 	availableItems: PropTypes.instanceOf(List).isRequired,
+	selectedItems: PropTypes.instanceOf(List).isRequired,
 };
 
 export default AvailableItems;

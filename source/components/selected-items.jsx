@@ -12,15 +12,15 @@ class SelectedItems extends Component {
 
 	renderItem(availableItem, index) {
 		return (
-			<div key={index} >
+			<span key={index} className='item-container'>
 				<ItemDisplay item={availableItem.item} onClick={() => { this.props.onUnselect(availableItem); }} />
-			</div>
+			</span>
 		);
 	}
 
 	render() {
 		return (
-			<div>
+			<div className='selected-items'>
 				{ this.props.selectedItems.map(this.renderItem) }
 			</div>
 		);

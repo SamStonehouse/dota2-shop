@@ -56,11 +56,13 @@
 	
 	var _reactRedux = __webpack_require__(186);
 	
-	var _recipes = __webpack_require__(195);
+	__webpack_require__(195);
+	
+	var _recipes = __webpack_require__(199);
 	
 	var _recipes2 = _interopRequireDefault(_recipes);
 	
-	var _recipeGame = __webpack_require__(203);
+	var _recipeGame = __webpack_require__(207);
 	
 	var _recipeGame2 = _interopRequireDefault(_recipeGame);
 	
@@ -23024,6 +23026,354 @@
 /* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(196);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(198)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./main.scss", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./main.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 196 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(197)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".item-container {\n  display: inline-block;\n  vertical-align: top; }\n\n.item {\n  display: inline-block;\n  border: 0;\n  margin: 0;\n  padding: 0;\n  width: 60px;\n  height: 48px;\n  border-radius: 1px;\n  border: 1px solid #333;\n  background-position: center;\n  background-repeat: no-repeat;\n  background-size: cover;\n  cursor: pointer; }\n\n.selected .item {\n  opacity: 0.6; }\n\n.available-items .item-container, .selected-items .item-container {\n  margin: 5px; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 197 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+	
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+	
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 198 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+	
+	module.exports = function(list, options) {
+		if(true) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+	
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+	
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+	
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+	
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+	
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+	
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+	
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+	
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+	
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+	
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+	
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+	
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+	
+		update(obj);
+	
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+	
+	var replaceText = (function () {
+		var textStore = [];
+	
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+	
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+	
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+	
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+	
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+	
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+	
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+	
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+	
+		var blob = new Blob([css], { type: "text/css" });
+	
+		var oldSrc = linkElement.href;
+	
+		linkElement.href = URL.createObjectURL(blob);
+	
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 199 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
@@ -23031,19 +23381,19 @@
 	});
 	exports.default = events;
 	
-	var _immutable = __webpack_require__(196);
+	var _immutable = __webpack_require__(200);
 	
-	var _actionTypes = __webpack_require__(197);
+	var _actionTypes = __webpack_require__(201);
 	
-	var _availableItem = __webpack_require__(198);
+	var _availableItem = __webpack_require__(202);
 	
 	var _availableItem2 = _interopRequireDefault(_availableItem);
 	
-	var _items = __webpack_require__(199);
+	var _items = __webpack_require__(203);
 	
 	var _items2 = _interopRequireDefault(_items);
 	
-	var _recipes = __webpack_require__(201);
+	var _recipes = __webpack_require__(205);
 	
 	var _recipes2 = _interopRequireDefault(_recipes);
 	
@@ -23218,7 +23568,7 @@
 	}
 
 /***/ },
-/* 196 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -28202,7 +28552,7 @@
 	}));
 
 /***/ },
-/* 197 */
+/* 201 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -28217,7 +28567,7 @@
 	var ITEM_UNSELECTED = exports.ITEM_UNSELECTED = 'ITEM_UNSELECTED';
 
 /***/ },
-/* 198 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28226,7 +28576,7 @@
 		value: true
 	});
 	
-	var _immutable = __webpack_require__(196);
+	var _immutable = __webpack_require__(200);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -28260,14 +28610,14 @@
 	exports.default = AvailableItem;
 
 /***/ },
-/* 199 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _immutable = __webpack_require__(196);
+	var _immutable = __webpack_require__(200);
 	
-	var _item = __webpack_require__(200);
+	var _item = __webpack_require__(204);
 	
 	var _item2 = _interopRequireDefault(_item);
 	
@@ -28602,7 +28952,7 @@
 	});
 
 /***/ },
-/* 200 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28611,7 +28961,7 @@
 		value: true
 	});
 	
-	var _immutable = __webpack_require__(196);
+	var _immutable = __webpack_require__(200);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -28639,18 +28989,18 @@
 	exports.default = Item;
 
 /***/ },
-/* 201 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _immutable = __webpack_require__(196);
+	var _immutable = __webpack_require__(200);
 	
-	var _recipe = __webpack_require__(202);
+	var _recipe = __webpack_require__(206);
 	
 	var _recipe2 = _interopRequireDefault(_recipe);
 	
-	var _items = __webpack_require__(199);
+	var _items = __webpack_require__(203);
 	
 	var _items2 = _interopRequireDefault(_items);
 	
@@ -28667,7 +29017,7 @@
 		components: [getItem('reaver'), getItem('vitality_booster'), getItem('recipe')]
 	}, {
 		name: 'Yasha',
-		components: [getItem('quelling_blade'), getItem('gauntlets'), getItem('recipe')]
+		components: [getItem('blade_of_alacrity'), getItem('boots_of_elves'), getItem('recipe')]
 	}];
 	
 	module.exports = new _immutable.List(recipes).map(function (recipe) {
@@ -28675,7 +29025,7 @@
 	});
 
 /***/ },
-/* 202 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28684,7 +29034,7 @@
 		value: true
 	});
 	
-	var _immutable = __webpack_require__(196);
+	var _immutable = __webpack_require__(200);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -28719,7 +29069,7 @@
 	exports.default = Recipe;
 
 /***/ },
-/* 203 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28734,23 +29084,23 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _immutable = __webpack_require__(196);
+	var _immutable = __webpack_require__(200);
 	
 	var _redux = __webpack_require__(172);
 	
 	var _reactRedux = __webpack_require__(186);
 	
-	var _itemActionCreators = __webpack_require__(204);
+	var _itemActionCreators = __webpack_require__(208);
 	
-	var _availableItems = __webpack_require__(205);
+	var _availableItems = __webpack_require__(209);
 	
 	var _availableItems2 = _interopRequireDefault(_availableItems);
 	
-	var _selectedItems = __webpack_require__(207);
+	var _selectedItems = __webpack_require__(211);
 	
 	var _selectedItems2 = _interopRequireDefault(_selectedItems);
 	
-	var _recipe = __webpack_require__(202);
+	var _recipe = __webpack_require__(206);
 	
 	var _recipe2 = _interopRequireDefault(_recipe);
 	
@@ -28785,7 +29135,7 @@
 					),
 					_react2.default.createElement(_selectedItems2.default, { onUnselect: this.props.onUnselect, selectedItems: this.props.selectedItems }),
 					_react2.default.createElement('hr', null),
-					_react2.default.createElement(_availableItems2.default, { onUnselect: this.props.onUnselect, onSelect: this.props.onSelect, availableItems: this.props.availableItems })
+					_react2.default.createElement(_availableItems2.default, { onSelect: this.props.onSelect, selectedItems: this.props.selectedItems, availableItems: this.props.availableItems })
 				);
 			}
 		}]);
@@ -28819,7 +29169,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(RecipeGame);
 
 /***/ },
-/* 204 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28830,7 +29180,7 @@
 	exports.itemSelected = itemSelected;
 	exports.itemUnselected = itemUnselected;
 	
-	var _actionTypes = __webpack_require__(197);
+	var _actionTypes = __webpack_require__(201);
 	
 	function itemSelected(availableItem) {
 		return {
@@ -28847,7 +29197,7 @@
 	}
 
 /***/ },
-/* 205 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28862,9 +29212,9 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _immutable = __webpack_require__(196);
+	var _immutable = __webpack_require__(200);
 	
-	var _itemDisplay = __webpack_require__(206);
+	var _itemDisplay = __webpack_require__(210);
 	
 	var _itemDisplay2 = _interopRequireDefault(_itemDisplay);
 	
@@ -28893,9 +29243,10 @@
 			value: function renderItem(availableItem, index) {
 				var _this2 = this;
 	
+				var selected = this.props.selectedItems.contains(availableItem);
 				return _react2.default.createElement(
-					'div',
-					{ className: availableItem.selected ? 'selected' : null, key: index },
+					'span',
+					{ className: (selected ? 'selected' : null) + ' item-container', key: index },
 					_react2.default.createElement(_itemDisplay2.default, { item: availableItem.item, onClick: function onClick() {
 							_this2.props.onSelect(availableItem);
 						} })
@@ -28906,7 +29257,7 @@
 			value: function render() {
 				return _react2.default.createElement(
 					'div',
-					null,
+					{ className: 'available-items' },
 					this.props.availableItems.map(this.renderItem)
 				);
 			}
@@ -28917,13 +29268,14 @@
 	
 	AvailableItems.propTypes = {
 		onSelect: _react.PropTypes.func.isRequired,
-		availableItems: _react.PropTypes.instanceOf(_immutable.List).isRequired
+		availableItems: _react.PropTypes.instanceOf(_immutable.List).isRequired,
+		selectedItems: _react.PropTypes.instanceOf(_immutable.List).isRequired
 	};
 	
 	exports.default = AvailableItems;
 
 /***/ },
-/* 206 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28938,7 +29290,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _item = __webpack_require__(200);
+	var _item = __webpack_require__(204);
 	
 	var _item2 = _interopRequireDefault(_item);
 	
@@ -28949,6 +29301,12 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	function getStyle(imgUrl) {
+		return {
+			backgroundImage: 'url(' + imgUrl + ')'
+		};
+	}
 	
 	var ItemDisplay = function (_Component) {
 		_inherits(ItemDisplay, _Component);
@@ -28962,11 +29320,7 @@
 		_createClass(ItemDisplay, [{
 			key: 'render',
 			value: function render() {
-				return _react2.default.createElement(
-					'button',
-					{ onClick: this.props.onClick, className: 'item' },
-					_react2.default.createElement('img', { src: '/assets/images/' + this.props.item.id + '.png', alt: this.props.item.id })
-				);
+				return _react2.default.createElement('button', { onClick: this.props.onClick, className: 'item', style: getStyle('/assets/images/' + this.props.item.id + '.png') });
 			}
 		}]);
 	
@@ -28981,7 +29335,7 @@
 	exports.default = ItemDisplay;
 
 /***/ },
-/* 207 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28996,9 +29350,9 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _immutable = __webpack_require__(196);
+	var _immutable = __webpack_require__(200);
 	
-	var _itemDisplay = __webpack_require__(206);
+	var _itemDisplay = __webpack_require__(210);
 	
 	var _itemDisplay2 = _interopRequireDefault(_itemDisplay);
 	
@@ -29028,8 +29382,8 @@
 				var _this2 = this;
 	
 				return _react2.default.createElement(
-					'div',
-					{ key: index },
+					'span',
+					{ key: index, className: 'item-container' },
 					_react2.default.createElement(_itemDisplay2.default, { item: availableItem.item, onClick: function onClick() {
 							_this2.props.onUnselect(availableItem);
 						} })
@@ -29040,7 +29394,7 @@
 			value: function render() {
 				return _react2.default.createElement(
 					'div',
-					null,
+					{ className: 'selected-items' },
 					this.props.selectedItems.map(this.renderItem)
 				);
 			}

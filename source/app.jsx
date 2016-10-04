@@ -3,6 +3,8 @@ import { render } from 'react-dom';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
+import {} from '../styles/main.scss';
+
 import recipes from './reducers/recipes';
 
 import RecipeGame from './components/recipe-game';

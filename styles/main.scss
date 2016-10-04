@@ -1,0 +1,33 @@
+.item-container {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.item {
+	display: inline-block;
+
+	border: 0;
+	margin: 0;
+	padding: 0;
+	width:60px;
+	height: 48px;
+
+	border-radius: 1px;
+	border: 1px solid #333;
+
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+
+	cursor: pointer;
+}
+
+.selected .item {
+	opacity: 0.6;
+}
+
+.available-items, .selected-items {
+	.item-container {
+		margin: 5px;
+	}
+}

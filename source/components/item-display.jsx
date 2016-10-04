@@ -1,12 +1,16 @@
 import React, { PropTypes, Component } from 'react';
 import Item from '../data/item';
 
+function getStyle(imgUrl) {
+	return {
+		backgroundImage: `url(${imgUrl})`,
+	};
+}
+
 class ItemDisplay extends Component {
 	render() {
 		return (
-			<button onClick={this.props.onClick} className='item'>
-				<img src={`/assets/images/${this.props.item.id}.png`} alt={this.props.item.id} />
-			</button>
+			<button onClick={this.props.onClick} className='item' style={getStyle(`/assets/images/${this.props.item.id}.png`)} />
 		);
 	}
 }

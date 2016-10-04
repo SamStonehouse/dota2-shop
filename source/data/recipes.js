@@ -14,7 +14,7 @@ const recipes = [
 	},
 	{
 		name: 'Yasha',
-		components: [getItem('quelling_blade'), getItem('gauntlets'), getItem('recipe')],
+		components: [getItem('blade_of_alacrity'), getItem('boots_of_elves'), getItem('recipe')],
 	},
 ];
 
