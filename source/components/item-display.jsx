@@ -16,8 +16,12 @@ class ItemDisplay extends Component {
 }
 
 ItemDisplay.propTypes = {
-	onClick: PropTypes.func.isRequired,
+	onClick: PropTypes.func,
 	item: PropTypes.instanceOf(Item).isRequired,
+};
+
+ItemDisplay.defaults = {
+	onClick: () => {},
 };
 
 export default ItemDisplay;

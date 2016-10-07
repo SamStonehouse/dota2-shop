@@ -1,6 +1,6 @@
 import { List, Map } from 'immutable';
 
-import { RESET, ITEM_SELECTED, ITEM_UNSELECTED } from '../constants/action-types';
+import { RESTART, ITEM_SELECTED, ITEM_UNSELECTED } from '../constants/action-types';
 import AvailableItem from '../data/available-item';
 import items from '../data/items';
 import recipes from '../data/recipes';
@@ -51,6 +51,8 @@ function _initialState() {
 		currentRecipe: null,
 		completedRecipes: new List([]),
 		points: 0,
+		streak: 0,
+		biggestStreak: 0,
 	});
 
 	if (state.get('remainingRecipes').size > 0) {
@@ -71,7 +73,11 @@ function itemSelected(action, _state) {
 	let state = _state;
 
 	if (state.get('selectedItems').contains(action.availableItem)) {
-		console.error('Selected item which has already been selected');
+		return state;
+	}
+
+	if (state.get('selectedItems').filter(availableItem => availableItem !== undefined).size === state.get('selectedItems').size) {
+		console.error('All slots are full');
 		return state;
 	}
 
@@ -94,9 +100,8 @@ function itemSelected(action, _state) {
 
 	let allCorrect = true;
 
-	for (let i = 0; i < correctItemIds.length; i++) {
-		console.log(`${i} - ${correctItemIds[i]}, ${selectedItemIds[i]}`);
-		if (correctItemIds[i] !== selectedItemIds[i]) {
+	for (let i = 0; i < correctItemIds.size; i++) {
+		if (correctItemIds.get(i) !== selectedItemIds.get(i)) {
 			allCorrect = false;
 			break;
 		}
@@ -106,14 +111,19 @@ function itemSelected(action, _state) {
 
 	if (allCorrect) {
 		state = state.set('points', state.get('points') + 1);
+		state = state.set('streak', state.get('streak') + 1);
+		if (state.get('streak') > state.get('biggestStreak')) {
+			state = state.set('biggestStreak', state.get('streak'));
+		}
 		state = state.set('completedRecipes', state.get('completedRecipes').push(state.get('currentRecipe')));
 	} else {
-		state = state.set('points', 0);
+		state = state.set('streak', 0);
 	}
 
 	state = state.set('selectedItems', new List([]));
 
 	if (state.get('remainingRecipes').size > 0) {
+		console.log('more than 1');
 		state = _nextRecipe(state);
 	} else {
 		state = state.set('currentRecipe', undefined);
@@ -139,18 +149,8 @@ function itemUnselected(action, state) {
 	return state.set('selectedItems', state.get('selectedItems').set(itemIndex, undefined));
 }
 
-function reset(action, _state) {
-	let state = _state;
-	state = state.set('completedRecipes', state.get('completedRecipes').push(state.get('currentRecipe')));
-	state = state.set('selectedItems', new List([]));
-	if (state.remainingRecipes.length > 0) {
-		state = _nextRecipe(state);
-	} else {
-		state = state.set('currentRecipe', undefined);
-		state = state.set('availableItems', new List([]));
-	}
-
-	return state;
+function restart() {
+	return _initialState();
 }
 
 export default function events(state = initialStore, action) {
@@ -161,8 +161,8 @@ export default function events(state = initialStore, action) {
 	case ITEM_UNSELECTED:
 		return itemUnselected(action, state);
 
-	case RESET:
-		return reset(action, state);
+	case RESTART:
+		return restart(action, state);
 
 	default:
 		return state;

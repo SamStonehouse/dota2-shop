@@ -7,6 +7,7 @@ import { itemSelected, itemUnselected, restart } from '../actions/item-action-cr
 import AvailableItems from './available-items';
 import SelectedItems from './selected-items';
 import Recipe from '../data/recipe';
+import ItemDisplay from './item-display';
 
 class RecipeGame extends Component {
 
@@ -19,9 +20,13 @@ class RecipeGame extends Component {
 	renderCurrentRecipe() {
 		return (
 			<div>
-				<p>Current Recipe: { this.props.currentRecipe.name }</p>
+				<p className='recipe-item'>
+					<ItemDisplay item={this.props.currentRecipe.item} />
+					{ this.props.currentRecipe.name }
+				</p>
 				<SelectedItems onUnselect={this.props.onUnselect} selectedItems={this.props.selectedItems} />
 				<AvailableItems onSelect={this.props.onSelect} selectedItems={this.props.selectedItems} availableItems={this.props.availableItems} />
+				<p>Points: { this.props.points }</p>
 			</div>
 		);
 	}
@@ -30,17 +35,18 @@ class RecipeGame extends Component {
 		return (
 			<div>
 				<h3>Game Over</h3>
+				<p>Points: { this.props.points }</p>
+				<p>Biggest Streak: { this.props.biggestStreak }</p>
 				<button onClick={this.props.restart}>Restart</button>
 			</div>
 		);
 	}
 
 	render() {
-		if (this.props.remainingRecipes.size === 0) {
-			return this.renderGameOver();
-		}
-
 		if (this.props.currentRecipe === undefined) {
+			if (this.props.remainingRecipes.size === 0) {
+				return this.renderGameOver();
+			}
 			throw new Error('Recipes remaining but there is not current recipe');
 		}
 
@@ -56,10 +62,13 @@ RecipeGame.propTypes = {
 	availableItems: PropTypes.instanceOf(List).isRequired,
 	selectedItems: PropTypes.instanceOf(List).isRequired,
 	remainingRecipes: PropTypes.instanceOf(List).isRequired,
+	points: PropTypes.number,
+	biggestStreak: PropTypes.number,
 };
 
 RecipeGame.defaults = {
 	currentRecipe: undefined,
+	points: 0,
 };
 
 function mapStateToProps(state) {
@@ -68,6 +77,8 @@ function mapStateToProps(state) {
 		currentRecipe: state.get('currentRecipe'),
 		availableItems: state.get('availableItems'),
 		selectedItems: state.get('selectedItems'),
+		points: state.get('points'),
+		biggestStreak: state.get('biggestStreak'),
 	};
 }
 

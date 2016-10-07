@@ -9,10 +9,12 @@ function getItem(id) {
 
 const recipes = [
 	{
+		item: getItem('heart'),
 		name: 'Heart of Tarrasque',
 		components: [getItem('reaver'), getItem('vitality_booster'), getItem('recipe')],
 	},
 	{
+		item: getItem('yasha'),
 		name: 'Yasha',
 		components: [getItem('blade_of_alacrity'), getItem('boots_of_elves'), getItem('recipe')],
 	},

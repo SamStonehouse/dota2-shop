@@ -1,6 +1,7 @@
 @import "~normalize.css/normalize.css";
 
 $primary: #c2251e;
+$primary: #252525;
 $secondary: #bbb;
 $tertiary: #d60606;
 
@@ -44,6 +45,23 @@ body {
 	text-align: center;
 }
 
+.recipe-item {
+	display: inline-block;
+	padding: 0;
+	padding-right: 10px;
+
+	background-color: #242424;
+
+	font-size: 20px;
+	vertical-align: middle;
+	text-align: left;
+
+	.item {
+		margin-right: 10px;
+		vertical-align: middle;
+	}
+}
+
 .item-container {
 	vertical-align: top;
 }
@@ -69,25 +87,9 @@ body {
 }
 
 .item {
-	border: 1px solid $primary;
-
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-
-	cursor: pointer;
-
-	&:hover {
-		border: 0;
-	}
-
-	&:active {
-		border: 2px solid $primary;
-	}
-
-	&:focus {
-		outline: 1px solid $primary;
-	}
 }
 
 .selected .item {
@@ -95,6 +97,24 @@ body {
 }
 
 .available-items, .selected-items {
+	.item {
+		border: 1px solid $primary;
+
+		cursor: pointer;
+
+		&:hover {
+			border: 0;
+		}
+
+		&:active {
+			border: 2px solid $primary;
+		}
+
+		&:focus {
+			outline: 1px solid $primary;
+		}
+	}
+
 	.item-container, .item-slot {
 		margin: 5px;
 	}
